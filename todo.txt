@@ -1,5 +1,9 @@
 set database to postgresql in settings
 
+find out whats the best time zone setting
+
+Run
+ manage.py check --deploy
 
 Set Debug False
 
