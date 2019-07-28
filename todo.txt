@@ -1,0 +1,6 @@
+set database to postgresql in settings
+
+
+Set Debug False
+
+Hide Secret Key

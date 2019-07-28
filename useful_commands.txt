@@ -1,0 +1,57 @@
+# new project
+django-admin startproject tcgrank
+
+# new app
+python manage.py startapp ranker
+
+# dev-server starten
+python manage.py runserver
+
+# after model changes make db migrations
+python manage.py makemigrations
+python manage.py migrate
+
+# create admin user
+python manage.py createsuperuser
+
+# dynamically refering to url name
+<a href="{% url 'index' %}">Home</a>.
+
+
+
+# Project Workflow
+create Apps for different kinds of reusable types of Apps
+
+settings.py -> INSTALLED_APPS - register APP
+
+set database -> https://docs.djangoproject.com/en/2.0/ref/settings/#databases
+
+(Set timezone https://en.wikipedia.org/wiki/List_of_tz_database_time_zones )
+
+redirect urls.py - and create a urls.py in your APP
+
+designing model architecture - draw some diagrams, what do you want to store?
+
+defining models ( https://docs.djangoproject.com/en/2.1/ref/models/fields/#filefield )
+
+register models in admin.py
+
+define urls
+
+define views
+
+define html templates
+
+define in settings.py where to find the templates
+
+# Authentication https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Authentication
+# log in via email and confirm - https://docs.djangoproject.com/en/2.1/topics/email/
+create new user - for now via admin
+
+posting form for user input: file upload https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Forms#Form
+
+
+
+
+
+
