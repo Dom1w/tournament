@@ -14,7 +14,7 @@ class="current"
   <p>
     {% if rank_site_list %}
     {% for rank_site in rank_site_list %}
-        <a href="{{ rank_site.get_absolute_url }}">{{ rank_site.url_name }}</a>
+      <a href="{{ rank_site.get_absolute_url }}">{{ rank_site.url_name }}</a><br>
     {% endfor %}
   {% else %}
     There are no sites yet.

@@ -56,4 +56,8 @@ https://stackoverflow.com/questions/4870619/django-after-login-redirect-user-to-
 
 
 
+        import sys # todo remove
+        print("-------------------------------Goodbye cruel world!-----------------------------------------------------------------------------------------------------------------------------", file=sys.stderr)
+        print(f"{RankSite.objects.all()}", file=sys.stderr)
+        print(f"{self.request.user}", file=sys.stderr)
 

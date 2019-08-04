@@ -1,0 +1,26 @@
+{% extends "base_generic.html" %}
+
+{% block title %}<title>TCG RANKS - Upload</title>{% endblock %}
+
+{% block nav_upload %}
+class="current"
+{% endblock %}
+
+{% block content %}
+  <header>
+    <h2>Upload</h2>
+    <p>
+      Upload a file with scores of a tournament.<br>
+      If you have a request for new games or formats, feel free to contact us.
+    </p>
+  </header>
+  <form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <table>
+    {{ form.as_p }}
+    </table>
+    <input type="submit" value="Submit">
+  </form>
+{% endblock %}
+
+

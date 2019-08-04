@@ -1,0 +1,41 @@
+{% extends "base_generic.html" %}
+
+{% block title %}<title>TCG RANKS - My Site</title>{% endblock %}
+
+{% block nav_my_site %}
+class="current"
+{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+          <header>
+              <h2>Hello {{ user.get_username }}</h2>
+          </header>
+            <p>
+                  <h3> Settings </h3>
+                  <a href="{% url 'change_password' %}"> Change Password</a>
+            </p>
+          <p>
+              <h3> Your Game and Format Combinations </h3>
+                <table>
+                  <tr>
+                    <th> Game </th>
+                    <th> Format </th>
+                    <th> Tournaments, that are counted </th>
+                    <th> Days, that are counted </th>
+                  </tr>
+                    {% if game_and_format_comb_list %}
+                         {% for game_and_format in game_and_format_comb_list %}
+                            <tr>
+                            <td> {{ game_and_format.game }} </td>
+                            <td> {{ game_and_format.format }} </td>
+                            <td> {{ game_and_format.number_of_tournaments_to_be_counted }} </td>
+                            <td> {{ game_and_format.max_time_back }} </td>
+                            <td><a href="#" class="button">View</a></td>
+                            </tr>
+                          {% endfor %}
+                    {% endif %}
+                </table>
+          </p>
+    {% endif %}
+{% endblock %}

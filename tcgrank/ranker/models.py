@@ -9,12 +9,12 @@ import datetime
 # Create your models here.
 alpha_numeric = RegexValidator(r'^[0-9a-zA-Z\-]+$', message='Only alphanumeric characters are allowed.')
 
-from django.core.exceptions import ValidationError
 
 validator_fn = [
     alpha_numeric,
-    RegexValidator(r'^(?!admin|futurework|subscribe).*', "Website relevant url. You cannot use it.")
+    RegexValidator(r'^(?!admin|futurework|upload|mysite|accounts|gameandformat).*', "Website relevant url. You cannot use it.")
 ]
+
 
 def regex_validators(value):
     for validator in validator_fn:
@@ -22,12 +22,11 @@ def regex_validators(value):
     return value
 
 
-
 class RankSite(models.Model):
     site_user = models.OneToOneField(User, on_delete=models.CASCADE)
     url_name = models.CharField(max_length=50, help_text="Enter a name for you sub-url of tcgrank", primary_key=True,
                                 validators=[regex_validators])
-    homepage = models.URLField(default="http://127.0.0.1:8000/subscription", help_text="Enter a url to your homepage")
+    homepage = models.URLField(default="http://127.0.0.1:8000/register", help_text="Enter a url to your homepage")
 
     SUBSCRIPTION_LEVEL = (
         ('f', 'Free'),
@@ -49,34 +48,37 @@ class RankSite(models.Model):
         return f'{self.url_name}'
 
     def get_absolute_url(self):
-        """Returns the url to access a detail record for this book."""
         return reverse('ranking', args=[str(self.url_name)])
 
     pass
 
 
-class CurrentScores(models.Model):
-    organiser = models.ForeignKey(RankSite, on_delete=models.CASCADE)
-    game = models.CharField(max_length=50, help_text="Enter a game name", validators=[alpha_numeric])
-    format = models.CharField(max_length=50, help_text="Enter a format name for the game", validators=[alpha_numeric])
-    data = models.TextField() # https://docs.djangoproject.com/en/2.2/ref/contrib/postgres/fields/#jsonfield
-
-    class Meta:
-        ordering = ['organiser', 'game', 'format']
+class Game(models.Model):
+    game = models.CharField(max_length=50, help_text="Enter a game name", validators=[alpha_numeric], primary_key=True)
 
     def __str__(self):
-        return f'{self.organiser}, {self.game}, {self.format}, {self.data}'
+        return f'{self.game}'
 
     pass
 
 
-class GameAndFormat(models.Model):
+class Format(models.Model):
+    format = models.CharField(max_length=50, help_text="Enter a format name for the game", validators=[alpha_numeric],
+                              primary_key=True)
+
+    def __str__(self):
+        return f'{self.format}'
+
+    pass
+
+
+class GameFormatCombination(models.Model):
     organiser = models.ForeignKey(RankSite, on_delete=models.CASCADE)
-    game = models.CharField(max_length=50, help_text="Enter a game name", validators=[alpha_numeric])
-    format = models.CharField(max_length=50, help_text="Enter a format name for the game", validators=[alpha_numeric])
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    format = models.ForeignKey(Format, on_delete=models.CASCADE)
 
     number_of_tournaments_to_be_counted = models.IntegerField(default=30)
-    max_date_to_count_to = models.DateField(default=datetime.date.today()-datetime.timedelta(weeks=52))
+    max_time_back = models.IntegerField(default=365)
 
     class Meta:
         ordering = ['organiser', 'game', 'format']
@@ -90,7 +92,7 @@ class GameAndFormat(models.Model):
 
 class Tournament(models.Model):
     date = models.DateField()
-    game_and_format = models.ForeignKey(GameAndFormat, on_delete=models.CASCADE,
+    game_and_format = models.ForeignKey(GameFormatCombination, on_delete=models.CASCADE,
                                         help_text="Format of the Tournament (e.g. Standard, Modern, ...)")
     points_per_win = models.IntegerField(default=2)
     points_per_draw = models.IntegerField(default=1)
@@ -121,6 +123,7 @@ class Player(models.Model):
 
     class Meta:
         ordering = ['last_name', 'first_name', 'game_id', 'organiser']
+        unique_together = ('last_name', 'first_name', 'game_id', 'organiser')
 
     def __str__(self):
         return f'{self.last_name}, {self.first_name}, {self.game_id}'
@@ -141,5 +144,21 @@ class Score(models.Model):
 
     def __str__(self):
         return f'{self.tournament}, {self.player}, ({self.wins}, {self.losses}, {self.draws})'
+
+    pass
+
+
+class CurrentScore(models.Model):
+    organiser = models.ForeignKey(RankSite, on_delete=models.CASCADE)
+    game = models.CharField(max_length=50, help_text="Enter a game name", validators=[alpha_numeric])
+    format = models.CharField(max_length=50, help_text="Enter a format name for the game", validators=[alpha_numeric])
+    player = models.ForeignKey(Player, on_delete=models.CASCADE)
+    current_score = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['organiser', 'game', 'format', 'player', 'current_score']
+
+    def __str__(self):
+        return f'{self.organiser}, {self.game}, {self.format}, {self.player}, {self.current_score}'
 
     pass

@@ -29,11 +29,11 @@
 						<nav id="nav">
 							<ul>
 								{% if user.is_authenticated %}
-								<li {% block nav_my_site %}{% endblock %}><a href="">My Site</a></li>
-								<li {% block nav_upload %}{% endblock %}><a href="">Upload</a></li>
+								<li {% block nav_my_site %}{% endblock %}><a href="{% url 'mysite' %}">My Site</a></li>
+								<li {% block nav_upload %}{% endblock %}><a href="{% url 'upload' %}">Upload</a></li>
 								{% endif %}
 								<li {% block nav_index %}{% endblock %}><a href="{% url 'index' %}">All Sites</a></li>
-								<li {% block nav_account %}{% endblock %}><a href="{% url 'index' %}">How To Get An Account</a></li>
+								<li {% block nav_register %}{% endblock %}><a href="{% url 'register' %}">Register</a></li>
 								<li {% block nav_future %}{% endblock %}><a href="{% url 'futurework' %}">Future Work</a></li>
 								{% if user.is_authenticated %}
 								<li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>
@@ -83,9 +83,8 @@
 										<h2>What's this all about?</h2>
 									</header>
 									<p>
-										This is <strong>Dopetrope</strong> a free, fully responsive HTML5 site template by
-										<a href="http://twitter.com/ajlkn">AJ</a> for <a href="http://html5up.net/">HTML5 UP</a> It's released for free under
-										the <a href="http://html5up.net/license/">Creative Commons Attribution</a> license so feel free to use it for any personal or commercial project &ndash; just don't forget to credit us!
+										Write Formula here and explain who we are, what this is about
+
 									</p>
 									<footer>
 										<ul class="actions">
@@ -97,7 +96,7 @@
 							<div class="col-4 col-12-medium">
 								<section>
 									<header>
-										<h2>Vitae tempor lorem</h2>
+										<h2>Contact</h2>
 									</header>
 									<ul class="social">
 										<li><a class="icon brands fa-facebook-f" href="#"><span class="label">Facebook</span></a></li>
@@ -131,7 +130,7 @@
 								<!-- Copyright -->
 									<div id="copyright">
 										<ul class="links">
-											<li>&copy; Untitled. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+											<li>&copy; TCG Ranks. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
 										</ul>
 									</div>
 
