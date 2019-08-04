@@ -1,0 +1,23 @@
+{% extends "base_generic.html" %}
+
+{% block title %}<title>TCG RANKS - Home</title>{% endblock %}
+
+{% block nav_index %}
+class="current"
+{% endblock %}
+
+{% block content %}
+  <header>
+    <h2>All Rank Sites</h2>
+    <p>A list of all currently running ranks-sites</p>
+  </header>
+  <p>
+    {% if rank_site_list %}
+    {% for rank_site in rank_site_list %}
+        <a href="{{ rank_site.get_absolute_url }}">{{ rank_site.url_name }}</a>
+    {% endfor %}
+  {% else %}
+    There are no sites yet.
+  {% endif %}
+  </p>
+{% endblock %}

@@ -48,9 +48,11 @@ define in settings.py where to find the templates
 # log in via email and confirm - https://docs.djangoproject.com/en/2.1/topics/email/
 create new user - for now via admin
 
-posting form for user input: file upload https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Forms#Form
+posting form for user input: file upload
+https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Forms#Form
 
-
+login redirect to custom page:
+https://stackoverflow.com/questions/4870619/django-after-login-redirect-user-to-his-custom-page-mysite-com-username
 
 
 
