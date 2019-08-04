@@ -4,7 +4,7 @@ from . import views
 urlpatterns = [
     path('', views.IndexView.as_view(), name='index'),
 
-    path('mysite/', views.GameFormatCombinationListView.as_view(), name='mysite'),
+    path('mysite/', views.FormatInGameInstanceListView.as_view(), name='mysite'),
     # path('gameandformat/<int:pk>/update/', views.GameFormatCombinationUpdateView.as_view(), name='game_format_change'),
 
 

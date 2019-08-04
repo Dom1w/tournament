@@ -1,3 +1,5 @@
+30h
+
 # new project
 django-admin startproject tcgrank
 

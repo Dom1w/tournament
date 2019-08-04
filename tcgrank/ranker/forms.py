@@ -2,10 +2,12 @@ from django import forms
 from django.forms import ModelForm
 from django.utils.translation import ugettext_lazy as _
 
-from ranker.models import GameFormatCombination
+from ranker.models import FormatInGameInstance
 
 
-class UploadForm(ModelForm):
+class UploadForm(forms.Form):
+
+    game_format = forms.ModelChoiceField(queryset=FormatInGameInstance.objects.all())
 
     file_format = forms.ChoiceField(choices=(
         (1, _("TCG Ranker Format")),
@@ -14,7 +16,3 @@ class UploadForm(ModelForm):
         ), label="File Format", widget=forms.Select(), required=True)
 
     file = forms.FileField(max_length=300, required=True)
-
-    class Meta:
-        model = GameFormatCombination
-        fields = ('game', 'format')

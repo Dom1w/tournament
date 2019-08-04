@@ -12,9 +12,15 @@ class="current"
               <h2>Hello {{ user.get_username }}</h2>
           </header>
             <p>
-                  <h3> Settings </h3>
-                  <a href="{% url 'change_password' %}"> Change Password</a>
+                Your website path is <a href="{{ organiser.get_absolute_url }}">/{{organiser.url_name}}</a> <br>
             </p>
+      <hr>
+            <h3> Settings </h3>
+            <p>
+               <a href="{% url 'index' %}"> Change Your URL</a> <br>
+               <a href="{% url 'change_password' %}"> Change Your Password</a>
+            </p>
+      <hr>
           <p>
               <h3> Your Game and Format Combinations </h3>
                 <table>
@@ -28,14 +34,15 @@ class="current"
                          {% for game_and_format in game_and_format_comb_list %}
                             <tr>
                             <td> {{ game_and_format.game }} </td>
-                            <td> {{ game_and_format.format }} </td>
+                            <td> {{ game_and_format.format.format }} </td>
                             <td> {{ game_and_format.number_of_tournaments_to_be_counted }} </td>
                             <td> {{ game_and_format.max_time_back }} </td>
-                            <td><a href="#" class="button">View</a></td>
+                            <td><a href="#" class="button">View</a> &nbsp; <a href="#" class="button">Del</a></td>
                             </tr>
                           {% endfor %}
                     {% endif %}
                 </table>
+            <a href="#" class="button"> Create New One</a>
           </p>
     {% endif %}
 {% endblock %}

@@ -11,12 +11,20 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import render, redirect
 
-from ranker.models import RankSite, Tournament, Player, Score, GameFormatCombination, CurrentScore
+from ranker.models import RankSite, Tournament, Player, Score, FormatInGameInstance, CurrentScore, FormatInGame
 from ranker.forms import UploadForm
 from ranker.FileParser import handle_uploaded_file
 
-# Create your views here.
 
+# helpers
+
+def get_organiser(request):
+    if RankSite.objects.filter(site_user=request.user):
+        return RankSite.objects.get(site_user=request.user)
+    return None
+
+
+# Create your views here.
 
 class IndexView(generic.ListView):
     template_name = 'ranker/index.html'
@@ -27,7 +35,7 @@ class IndexView(generic.ListView):
 
 def ranking(request, pk):
     # todo https://stackoverflow.com/questions/7287027/displaying-a-table-in-django-from-database
-    return render(request, "ranker/index.html")
+    return render(request, "ranker/user_sub_page.html")
 
 
 def futurework(request):
@@ -48,25 +56,33 @@ def upload(request):
             return HttpResponseRedirect(reverse('index'))
     else:
         form = UploadForm()
+    organiser = get_organiser(request)
+    all_formats_pk = list(FormatInGameInstance.objects.filter(organiser=organiser).values_list('format', flat=True))
+    form.fields['game_format'].queryset = FormatInGame.objects.filter(pk__in=all_formats_pk)
 
     context = {'form': form}
     return render(request, 'ranker/upload.html', context)
 
 
-class GameFormatCombinationListView(LoginRequiredMixin, ListView):
-    model = GameFormatCombination
+class FormatInGameInstanceListView(LoginRequiredMixin, ListView):
+    model = FormatInGameInstance
     context_object_name = 'game_and_format_comb_list'
     template_name = "ranker/mysite.html"
 
     def get_queryset(self):
-        organiser = RankSite.objects.get(site_user=self.request.user)
-        if organiser:
-            return GameFormatCombination.objects.filter(organiser=organiser)
+        self.organiser = get_organiser(self.request)
+        if self.organiser:
+            return FormatInGameInstance.objects.filter(organiser=self.organiser).select_related('format')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(FormatInGameInstanceListView, self).get_context_data(**kwargs)
+        context.update({'organiser': self.organiser})
+        return context
 
 
 # only for pro users to change the # of tournaments and the time
 # class GameFormatCombinationUpdateView(LoginRequiredMixin, UpdateView):
-#     model = GameFormatCombination
+#     model = FormatInGameInstance
 #     fields = ('game', 'format')
 #     success_url = reverse_lazy('mysite')
 
