@@ -1,4 +1,4 @@
-30h
+16h Tutorials + 30h Arbeit
 
 # new project
 django-admin startproject tcgrank

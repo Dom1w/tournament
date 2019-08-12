@@ -62,24 +62,20 @@ class Game(models.Model):
     pass
 
 
-class FormatInGame(models.Model):
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+class Format(models.Model):
     format = models.CharField(max_length=50, help_text="Enter a format name for the game", validators=[alpha_numeric])
-
-    class Meta:
-        ordering = ['game', 'format']
-        unique_together = ('game', 'format')
+    game = models.ManyToManyField(Game, through='GameAndFormatMeta')
 
     def __str__(self):
-        return f'{self.game} - {self.format}'
+        return f'{self.format}'
 
     pass
 
 
-class FormatInGameInstance(models.Model):
+class GameAndFormatMeta(models.Model):
     organiser = models.ForeignKey(RankSite, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    format = models.ForeignKey(FormatInGame, on_delete=models.CASCADE)
+    format = models.ForeignKey(Format, on_delete=models.CASCADE)
 
     number_of_tournaments_to_be_counted = models.IntegerField(default=30)
     max_time_back = models.IntegerField(default=365)
@@ -89,14 +85,14 @@ class FormatInGameInstance(models.Model):
         unique_together = ('organiser', 'game', 'format')
 
     def __str__(self):
-        return f'{self.organiser}, {self.game}, {self.format}'
+        return f'{self.game} - {self.format}'
 
     pass
 
 
 class Tournament(models.Model):
     date = models.DateField()
-    game_and_format = models.ForeignKey(FormatInGameInstance, on_delete=models.CASCADE,
+    game_and_format = models.ForeignKey(GameAndFormatMeta, on_delete=models.CASCADE,
                                         help_text="Format of the Tournament (e.g. Standard, Modern, ...)")
     points_per_win = models.IntegerField(default=2)
     points_per_draw = models.IntegerField(default=1)
@@ -155,7 +151,7 @@ class Score(models.Model):
 class CurrentScore(models.Model):
     organiser = models.ForeignKey(RankSite, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    format = models.ForeignKey(FormatInGame, on_delete=models.CASCADE)
+    format = models.ForeignKey(Format, on_delete=models.CASCADE)
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     current_score = models.IntegerField(default=0)
 
