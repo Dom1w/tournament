@@ -4,12 +4,16 @@ from ranker.models import RankSite, Tournament, Player, Score, GameAndFormatMeta
 # Register your models here.
 
 admin.site.register(RankSite)
-#admin.site.register(Tournament)
-#admin.site.register(Player)
-#admin.site.register(Score)
-#admin.site.register(CurrentScore)
 admin.site.register(Game)
 admin.site.register(Format)
+
+
+
+# todo comment all this out down below
+admin.site.register(Tournament)
+admin.site.register(Player)
+admin.site.register(Score)
+admin.site.register(CurrentScore)
 
 @admin.register(GameAndFormatMeta)
 class GameAndFormatMetaAdmin(admin.ModelAdmin):

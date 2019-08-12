@@ -7,5 +7,38 @@ class="current"
 {% endblock %}
 
 {% block content %}
-  Nothing here yet
+
+
+{% if all_game_formats_of_user %}
+  <div class="btn-group">
+    {% for game, formats in all_game_formats_of_user.items %}
+      <a href="{% url 'rank_game_format' site_name=site_name game=game format=formats.0 %}" class="button">{{ game }}</a>
+    {% endfor %}
+  </div>
+{% endif %}
+<hr>
+{% if relevant_formats %}
+  <div class="btn-group">
+    {% for format in relevant_formats %}
+      <a href="{% url 'rank_game_format' site_name=site_name game=current_game format=format %}" class="button">{{ format }}</a>
+    {% endfor %}
+  </div>
+{% endif %}
+<hr>
+<table>
+  <tr>
+    <th> Rank </th>
+    <th> Name </th>
+    <th> Score </th>
+  </tr>
+  {% if scores %}
+       {% for score in scores %}
+          <tr>
+          <td> {{ forloop.counter }} </td>
+          <td> {{ score.player.first_name }} {{ score.player.last_name }} </td>
+          <td> {{ score.current_score }} </td>
+          </tr>
+        {% endfor %}
+  {% endif %}
+</table>
 {% endblock %}

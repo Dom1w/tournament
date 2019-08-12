@@ -63,7 +63,7 @@ class Game(models.Model):
 
 
 class Format(models.Model):
-    format = models.CharField(max_length=50, help_text="Enter a format name for the game", validators=[alpha_numeric])
+    format = models.CharField(max_length=50, help_text="Enter a format name for the game", validators=[alpha_numeric]) # todo can't be "total"
     game = models.ManyToManyField(Game, through='GameAndFormatMeta')
 
     def __str__(self):
@@ -150,13 +150,14 @@ class Score(models.Model):
 
 class CurrentScore(models.Model):
     organiser = models.ForeignKey(RankSite, on_delete=models.CASCADE)
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    format = models.ForeignKey(Format, on_delete=models.CASCADE)
+    game = models.CharField(max_length=50, help_text="Enter a game name", validators=[alpha_numeric])
+    format = models.CharField(max_length=50, help_text="Enter a format name for the game", validators=[alpha_numeric])
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     current_score = models.IntegerField(default=0)
 
     class Meta:
         ordering = ['organiser', 'game', 'format', 'player', 'current_score']
+        unique_together = ('organiser', 'game', 'format', 'player')
 
     def __str__(self):
         return f'{self.organiser}, {self.game}, {self.format}, {self.player}, {self.current_score}'

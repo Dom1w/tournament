@@ -34,13 +34,58 @@ class IndexView(generic.ListView):
 
 
 def ranking(request, pk):
-    # todo
-    return render(request, "ranker/user_sub_page.html")
+    organiser = RankSite.objects.filter(url_name=pk)
 
-def ranking_user_game_format(request, pk):
-    # todo https://stackoverflow.com/questions/7287027/displaying-a-table-in-django-from-database
+    if len(organiser) == 1:
+        organiser = organiser[0]
 
-    return render(request, "ranker/user_sub_page.html")
+        games_formats = GameAndFormatMeta.objects.filter(organiser=organiser)
+        all_game_formats_of_user = {}
+        for game_format in games_formats:
+            if not game_format.game.game in all_game_formats_of_user.keys():
+                all_game_formats_of_user[game_format.game.game] = []
+            all_game_formats_of_user[game_format.game.game].append(game_format.format.format)
+
+        for game, formats in all_game_formats_of_user.items():
+            game = game
+            format = formats[0]
+            break
+
+        return HttpResponseRedirect(reverse('rank_game_format', args=[pk, game, format]))
+    raise KeyError
+
+
+def ranking_user_game_format(request, site_name, game, format):
+    organiser = RankSite.objects.filter(url_name=site_name)
+
+    if len(organiser) == 1:
+        organiser = organiser[0]
+
+        games_formats = GameAndFormatMeta.objects.filter(organiser=organiser)
+        all_game_formats_of_user = {}
+        for game_format in games_formats:
+            if not game_format.game.game in all_game_formats_of_user.keys():
+                all_game_formats_of_user[game_format.game.game] = []
+            all_game_formats_of_user[game_format.game.game].append(game_format.format.format)
+
+        scores = CurrentScore.objects.filter(organiser=organiser, game=game, format=format).order_by('-current_score','player')
+
+        relevant_formats = all_game_formats_of_user.get(game)
+        if relevant_formats is None:
+            return HttpResponseRedirect(reverse('index'))
+        if len(relevant_formats) > 1:
+            relevant_formats.append('Total')
+        context = {
+            'all_game_formats_of_user': all_game_formats_of_user,
+            'relevant_formats': all_game_formats_of_user.get(game),
+            'current_game': game,
+            'site_name': site_name,
+            'scores': scores,
+        }
+
+        return render(request, "ranker/user_sub_page.html", context=context)
+
+    raise KeyError
 
 def futurework(request):
     return render(request, "ranker/futurework.html")
@@ -57,8 +102,8 @@ def upload(request):
     if request.method == 'POST':
         form = UploadForm(request.POST, files=request.FILES)
         if form.is_valid():
-            handle_uploaded_file(form)
-            return HttpResponseRedirect(reverse('ranking', args=[str(organiser.url_name)]))
+            handle_uploaded_file(form, organiser)
+            return HttpResponseRedirect(reverse('upload'))#, args=[str(organiser.url_name)]))
     else:
         form = UploadForm()
 
